@@ -9,7 +9,7 @@ from .models import Task
 @permission_classes([permissions.IsAuthenticated])
 def create_task(request):
     """
-    Create a new task for the authenticated user
+    Create a new task for the authenticated user.
     """
     serializer = TaskCreateSerializer(data=request.data)
     if serializer.is_valid():
