@@ -21,6 +21,9 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+# Custom user model
+AUTH_USER_MODEL = 'users.CustomUser'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
@@ -43,7 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +137,13 @@ STATIC_URL = 'static/'
 CORS_ALLOWED_ORIGINS = [
 	    "http://localhost:3000",  # React app
 ]
+
+# REST Framework configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
