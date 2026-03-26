@@ -135,7 +135,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 CORS_ALLOWED_ORIGINS = [
-	    "http://localhost:3000",  # React app
+	    "http://localhost:3000",  # React application
 ]
 
 # REST Framework configuration
