@@ -87,16 +87,20 @@ WSGI_APPLICATION = 'TaskSphereDjango.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# Database configuration
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('PGDATABASE'),
-        'USER': os.getenv('PGUSER'),
-        'PASSWORD': os.getenv('PGPASSWORD'),
-        'HOST': os.getenv('PGHOST'),
+        'NAME': os.getenv('PGDATABASE', 'task_sphere'),
+        'USER': os.getenv('PGUSER', 'postgres'),
+        'PASSWORD': os.getenv('PGPASSWORD', ''),
+        'HOST': os.getenv('PGHOST', 'localhost'),
         'PORT': os.getenv('PGPORT', '5432'),
     }
 }
+
+# Debug: Print database configuration (remove in production)
+print("Database configuration:", DATABASES['default'])
 
 
 # Password validation
