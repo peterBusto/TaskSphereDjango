@@ -18,7 +18,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop('password_confirm')
-        user = CustomUser.objects.create_user(**validated_data)
+        password = validated_data.pop('password')
+        user = CustomUser.objects.create_user(**validated_data, password=password)
         return user
 
 
@@ -31,7 +32,7 @@ class UserLoginSerializer(serializers.Serializer):
         password = attrs.get('password')
 
         if email and password:
-            user = authenticate(username=email, password=password)
+            user = authenticate(request=self.context.get('request'), username=email, password=password)
             if not user:
                 raise serializers.ValidationError('Invalid credentials')
             if not user.is_active:
