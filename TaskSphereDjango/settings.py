@@ -88,20 +88,28 @@ WSGI_APPLICATION = 'TaskSphereDjango.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 # Database configuration
-# Ensure environment variables are loaded
-if not all([os.getenv('PGDATABASE'), os.getenv('PGUSER'), os.getenv('PGPASSWORD'), os.getenv('PGHOST')]):
-    raise ValueError("Missing required database environment variables. Please check PGDATABASE, PGUSER, PGPASSWORD, and PGHOST.")
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('PGDATABASE'),
-        'USER': os.getenv('PGUSER'),
-        'PASSWORD': os.getenv('PGPASSWORD'),
-        'HOST': os.getenv('PGHOST'),
-        'PORT': os.getenv('PGPORT', '5432'),
+# Check for required environment variables
+missing_vars = [var for var in ['PGDATABASE', 'PGUSER', 'PGPASSWORD', 'PGHOST'] if not os.getenv(var)]
+if missing_vars:
+    print(f"WARNING: Missing environment variables: {', '.join(missing_vars)}")
+    print("Using SQLite for development - please set database environment variables in production")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('PGDATABASE'),
+            'USER': os.getenv('PGUSER'),
+            'PASSWORD': os.getenv('PGPASSWORD'),
+            'HOST': os.getenv('PGHOST'),
+            'PORT': os.getenv('PGPORT', '5432'),
+        }
+    }
 
 
 # Password validation
