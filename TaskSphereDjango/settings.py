@@ -88,40 +88,20 @@ WSGI_APPLICATION = 'TaskSphereDjango.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 # Database configuration
-import dj_database_url
+# Ensure environment variables are loaded
+if not all([os.getenv('PGDATABASE'), os.getenv('PGUSER'), os.getenv('PGPASSWORD'), os.getenv('PGHOST')]):
+    raise ValueError("Missing required database environment variables. Please check PGDATABASE, PGUSER, PGPASSWORD, and PGHOST.")
 
-# Try to get database URL from environment, fallback to individual PG variables, then SQLite
-DATABASE_URL = os.getenv('DATABASE_URL')
-
-if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('PGDATABASE'),
+        'USER': os.getenv('PGUSER'),
+        'PASSWORD': os.getenv('PGPASSWORD'),
+        'HOST': os.getenv('PGHOST'),
+        'PORT': os.getenv('PGPORT', '5432'),
     }
-elif os.getenv('PGHOST'):
-    # Use individual PostgreSQL environment variables (Vercel Postgres default)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('PGDATABASE'),
-            'USER': os.getenv('PGUSER'),
-            'PASSWORD': os.getenv('PGPASSWORD'),
-            'HOST': os.getenv('PGHOST'),
-            'PORT': os.getenv('PGPORT', '5432'),
-        }
-    }
-else:
-    # Fallback for local development
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-
-# Debug: Print database configuration (remove in production)
-print("DATABASE_URL:", DATABASE_URL)
-print("PGHOST:", os.getenv('PGHOST'))
-print("Database configuration:", DATABASES['default'])
+}
 
 
 # Password validation
