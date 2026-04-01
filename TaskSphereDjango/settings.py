@@ -90,12 +90,24 @@ WSGI_APPLICATION = 'TaskSphereDjango.wsgi.application'
 # Database configuration
 import dj_database_url
 
-# Try to get database URL from environment, fallback to SQLite for local development
+# Try to get database URL from environment, fallback to individual PG variables, then SQLite
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL)
+    }
+elif os.getenv('PGHOST'):
+    # Use individual PostgreSQL environment variables (Vercel Postgres default)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('PGDATABASE'),
+            'USER': os.getenv('PGUSER'),
+            'PASSWORD': os.getenv('PGPASSWORD'),
+            'HOST': os.getenv('PGHOST'),
+            'PORT': os.getenv('PGPORT', '5432'),
+        }
     }
 else:
     # Fallback for local development
@@ -108,6 +120,7 @@ else:
 
 # Debug: Print database configuration (remove in production)
 print("DATABASE_URL:", DATABASE_URL)
+print("PGHOST:", os.getenv('PGHOST'))
 print("Database configuration:", DATABASES['default'])
 
 
