@@ -148,3 +148,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+# Allow all origins for development deployment
+CORS_ALLOW_ALL_ORIGINS = True
